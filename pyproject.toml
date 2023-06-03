@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "wechatdocs"
+version = "0.1.0"
+description = ""
+authors = ["lucas-shao <lucas_shao@126.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9.16"
+langchain = "^0.0.188"
+pypdf2 = "^3.0.1"
+python-dotenv = "^1.0.0"
+streamlit = "^1.23.1"
+faiss-cpu = "^1.7.4"
+streamlit-extras = "^0.2.7"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
