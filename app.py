@@ -8,22 +8,24 @@ from langchain.vectorstores import FAISS
 from langchain.llms import OpenAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
+from wechatdocs.callbacks.streamlit import StreamlitCallbackHandler
+
 
 # Sidebar contents
 with st.sidebar:
-    st.title("LLM Chat With Paper")
+    st.title("Let's Chat With Documents")
     st.markdown(
         """
     
     ## About
-    This is an app to chat with paper.
+    This is an app to chat with docs.
 
     """
     )
 
 
 def main():
-    st.header("Chat with Paper")
+    st.header("We Chat Docs")
 
     # upload a PDF file
     pdf_file = st.file_uploader("Upload a PDF file", type=["pdf"])
@@ -44,34 +46,37 @@ def main():
         # store or query the vector store
         store_name = pdf_file.name[:-4]
 
-        if os.path.exists(f"{store_name}.pkl"):
-            with open(f"{store_name}.pkl", "rb") as f:
+        if os.path.exists(f"resource/{store_name}.pkl"):
+            with open(f"resource/{store_name}.pkl", "rb") as f:
                 VectorStore = pickle.load(f)
             # st.write("Embeddings loaded from Disk")
         else:
             # embeddings
             embeddings = OpenAIEmbeddings()
             VectorStore = FAISS.from_texts(chunks, embedding=embeddings)
-            with open(f"{store_name}.pkl", "wb") as f:
+            with open(f"resource/{store_name}.pkl", "wb") as f:
                 pickle.dump(VectorStore, f)
             # st.write("Embeddings saved to Disk")
 
         # let user input a question
-        query = st.text_input("Ask a question about the paper:")
+        query = st.text_input("Ask a question about the document:")
 
         if query:
             # search the vector store
             docs = VectorStore.similarity_search(query, k=2)
 
             # load the LLM
-            llm = OpenAI(model_name="gpt-3.5-turbo")
+            llm = OpenAI(
+                model_name="gpt-3.5-turbo",
+                streaming=True,
+                callbacks=[StreamlitCallbackHandler()],
+            )
 
             # QA
             chain = load_qa_chain(llm, chain_type="stuff")
             with get_openai_callback() as cb:
                 response = chain.run(input_documents=docs, question=query)
                 print(cb)
-            st.write(response)
 
 
 if __name__ == "__main__":

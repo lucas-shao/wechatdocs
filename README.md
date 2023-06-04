@@ -1,2 +1,2 @@
 # wechatdocs
-chat with any doc , gaining knowledge more convenient
+chat with any documents , gaining knowledge more convenient
