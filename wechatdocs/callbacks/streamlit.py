@@ -1,6 +1,6 @@
 """Callback Handler that logs to streamlit."""
 from typing import Any, Dict, List, Optional, Union
-
+import sys
 import streamlit as st
 
 from langchain.callbacks.base import BaseCallbackHandler
@@ -17,7 +17,10 @@ class StreamlitCallbackHandler(BaseCallbackHandler):
     def on_llm_start(
         self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
     ) -> None:
-        """Run when LLM starts running."""
+        """Print out the prompts."""
+        sys.stdout.write("Prompts after formatting:")
+        for prompt in prompts:
+            sys.stdout.write(prompt)
 
     def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
         """Run on new LLM token. Only available when streaming is enabled."""
