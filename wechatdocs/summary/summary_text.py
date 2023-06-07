@@ -8,7 +8,7 @@ LLM_MAX_TOKENS = 3600
 
 
 ## 将文本做限定字数的总结 summaryTokensLen最好小于200
-def summaryText(text: str, summaryTokensLen: int) -> str:
+def summary_text(text: str, summaryTokensLen: int) -> str:
     llm = OpenAI(
         temperature=0,
         model_name="gpt-3.5-turbo",
@@ -19,7 +19,7 @@ def summaryText(text: str, summaryTokensLen: int) -> str:
 
     if len(text) < (LLM_MAX_TOKENS - summaryTokensLen):
         # 小于LLM MAX Context token数则直接总结
-        output_summary = _summarySubText(text, llm)
+        output_summary = _summary_sub_text(text, llm)
         print("output_summary :::: ")
         print(output_summary)
         return output_summary
@@ -35,12 +35,12 @@ def summaryText(text: str, summaryTokensLen: int) -> str:
         for t in texts:
             print("t :::: ")
             print(t)
-            output_summary = output_summary + _summarySubText(t, llm)
+            output_summary = output_summary + _summary_sub_text(t, llm)
 
-        return summaryText(output_summary, summaryTokensLen)
+        return summary_text(output_summary, summaryTokensLen)
 
 
-def _summarySubText(text: str, llm) -> str:
+def _summary_sub_text(text: str, llm) -> str:
     docs = [Document(page_content=text)]
     summary_chain = load_summarize_chain(llm, chain_type="stuff", verbose=True)
     output_summary = summary_chain.run(docs)
