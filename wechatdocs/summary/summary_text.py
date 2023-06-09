@@ -8,7 +8,7 @@ LLM_MAX_TOKENS = 3600
 
 
 ## 将文本做限定字数的总结 summaryTokensLen最好小于200
-def summary_text(text: str, summaryTokensLen: int) -> str:
+def summary_text(text: str, summaryTokensLen: int = 100) -> str:
     llm = OpenAI(
         temperature=0,
         model_name="gpt-3.5-turbo",
