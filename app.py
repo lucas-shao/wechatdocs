@@ -22,11 +22,8 @@ with st.sidebar:
 
 
 def main():
-    if "generated" not in st.session_state:
-        st.session_state["generated"] = []
-
-    if "past" not in st.session_state:
-        st.session_state["past"] = []
+    # init session state
+    _init_st_session_state()
 
     st.header("We Chat Docs")
 
@@ -67,6 +64,14 @@ def main():
 
             st.session_state.past.append(query)
             st.session_state.generated.append(resp)
+
+
+def _init_st_session_state():
+    if "generated" not in st.session_state:
+        st.session_state["generated"] = []
+
+    if "past" not in st.session_state:
+        st.session_state["past"] = []
 
 
 if __name__ == "__main__":
