@@ -22,6 +22,12 @@ with st.sidebar:
 
 
 def main():
+    if "generated" not in st.session_state:
+        st.session_state["generated"] = []
+
+    if "past" not in st.session_state:
+        st.session_state["past"] = []
+
     st.header("We Chat Docs")
 
     # upload a PDF file
@@ -49,8 +55,18 @@ def main():
             # 先将历史问答展示出来
             message(query, is_user=True)
 
+            if st.session_state["generated"]:
+                for i in range(len(st.session_state["generated"]) - 1, -1, -1):
+                    message(st.session_state["generated"][i], key=str(i))
+                    message(
+                        st.session_state["past"][i], is_user=True, key=str(i) + "_user"
+                    )
+
             # 最后再发起询问
-            similarity_search(llm, VectorStore, query)
+            resp = similarity_search(llm, VectorStore, query)
+
+            st.session_state.past.append(query)
+            st.session_state.generated.append(resp)
 
 
 if __name__ == "__main__":
