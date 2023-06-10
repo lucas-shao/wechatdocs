@@ -25,17 +25,25 @@ def main():
     # init session state
     _init_st_session_state()
 
-    st.header("We Chat Docs")
+    st.header("We Chat Docs 📚")
 
     # upload a PDF file
-    pdf_file = st.file_uploader("Upload a PDF file", type=["pdf"])
+    pdf_file = st.file_uploader("Upload a PDF file 📄", type=["pdf"])
+
+    if pdf_file is not None:
+        if st.session_state["pdf"] != pdf_file:
+            st.session_state["pdf"] = pdf_file
+            st.session_state["generated"] = []
+            st.session_state["past"] = []
+            _clear_query()
 
     if pdf_file is not None:
         # store the PDF to a vector store
         VectorStore = store_pdf_to_vector_store(pdf_file)
 
         # let user input a question
-        query = st.text_input("Ask a question about the document:")
+        # 这里的key=query,映射为st.session_state["query"]的值
+        query = st.text_input("Ask a question about the document:", key="query")
 
         if query:
             # load the LLM
@@ -72,6 +80,16 @@ def _init_st_session_state():
 
     if "past" not in st.session_state:
         st.session_state["past"] = []
+
+    if "pdf" not in st.session_state:
+        st.session_state["pdf"] = None
+
+    if "query" not in st.session_state:
+        st.session_state["query"] = ""
+
+
+def _clear_query():
+    st.session_state["query"] = ""
 
 
 if __name__ == "__main__":
