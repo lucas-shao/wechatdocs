@@ -4,16 +4,9 @@ from langchain.callbacks import get_openai_callback
 from wechatdocs.callbacks.streamlit import StreamlitCallbackHandler
 
 
-def similarity_search(vectorStore, query):
+def similarity_search(llm, vectorStore, query):
     # search the vector store
     docs = vectorStore.similarity_search(query, k=2)
-
-    # load the LLM
-    llm = OpenAI(
-        model_name="gpt-3.5-turbo",
-        streaming=True,
-        callbacks=[StreamlitCallbackHandler()],
-    )
 
     # QA
     chain = load_qa_chain(llm, chain_type="stuff")
